@@ -1,7 +1,35 @@
 var img = new Image();
-img.src = 'data/race_1765_photo_35016594.jpg';
+// img.src = 'data/race_1765_photo_35016594.jpg';
 
 var pframeBox = d3.select('#photo-frame-box');
+var dropzone = document.getElementById('dropzone');
+var droppedFiles;
+dropzone.addEventListener("dragover", function(event) { 
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    }, true);
+dropzone.addEventListener("drop", function(event) {
+
+    event.preventDefault();
+    console.log(event.dataTransfer.files);
+    console.log(event.dataTransfer.files[0]);
+    savedName = event.dataTransfer.files[0].name;
+    droppedFiles = event.dataTransfer.files;
+
+    var reader = new FileReader();
+    firstFile = droppedFiles[0];
+
+    console.log(firstFile);
+    
+    reader.readAsDataURL(firstFile);
+    
+    console.log(reader);
+    reader.onload = function(e) {
+        img.src = reader.result;
+    }
+
+    }, true);
+
 var getMaxImageViewWidth = function(pframeBox) {
     return Math.floor(pframeBox.node().getBoundingClientRect().width*0.95);
 }

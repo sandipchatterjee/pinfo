@@ -2,6 +2,14 @@ canvas#photo-frame {
     border: 1px solid black;
 }
 
-/*#document-box {
-    padding: 5px;
-}*/
+#dropzone {
+    border: 2px dashed black;
+    border-radius: 12px;
+    background: #93bcff;
+    text-align: center;
+    margin: 2px;
+    padding: 12px;
+    font-size: 18px;
+    font-family: sans-serif;
+    color: #e8e8e8;
+}
