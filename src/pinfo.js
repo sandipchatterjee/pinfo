@@ -19,7 +19,12 @@ dropzone.addEventListener("drop", function(event) {
     var reader = new FileReader();
     firstFile = droppedFiles[0];
 
-    console.log(firstFile);
+    d3.select("#filename")
+      .text(firstFile.name);
+    d3.select("#filetype")
+      .text(firstFile.type + ", ");
+    d3.select("#filesize")
+      .text(d3.format(".1")(firstFile.size/1024/1024) + " MB");
     
     reader.readAsDataURL(firstFile);
     

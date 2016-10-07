@@ -1,5 +1,5 @@
 canvas#photo-frame {
-    border: 1px solid black;
+    /*border: 1px solid black;*/
 }
 
 #dropzone {
@@ -7,9 +7,12 @@ canvas#photo-frame {
     border-radius: 12px;
     background: #93bcff;
     text-align: center;
-    margin: 2px;
     padding: 12px;
     font-size: 18px;
     font-family: sans-serif;
     color: #e8e8e8;
+}
+
+#info-row {
+    margin-bottom: 4px;
 }
