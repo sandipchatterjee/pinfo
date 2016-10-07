@@ -4,6 +4,8 @@ var img = new Image();
 var pframeBox = d3.select('#photo-frame-box');
 var dropzone = document.getElementById('dropzone');
 var droppedFiles;
+var imageData;
+
 dropzone.addEventListener("dragover", function(event) { 
     event.preventDefault();
     event.dataTransfer.dropEffect = 'copy';
@@ -56,6 +58,7 @@ var setCanvasDimensions = function(height, width, widthToHeightRatio) {
     ctx.drawImage(img, 0, 0, width, height);
 }
 
+
 img.onload = function() {
         ctx.drawImage(img, 0, 0);
         var width = img.width;
@@ -64,9 +67,38 @@ img.onload = function() {
         widthToHeightRatio = width/height;
         setCanvasDimensions(height, width, widthToHeightRatio);
 
+        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+                       .data;
+        console.log(imageData[5]);
+        makeImageHists(imageData);
+
         // resize canvas and photo display if window size changes
         window.addEventListener("resize", function () {
             setCanvasDimensions(height, width, widthToHeightRatio);
         });
 
-    };
+};
+
+function makeImageHists(imageData) {
+
+    d3.select("#photo-info")
+      .text("loading");
+    var reds = [];
+    var greens = [];
+    var blues = [];
+
+    console.log(imageData.length);
+    console.log(imageData[5]);
+
+    for (var i=0; i < imageData.length; i+=4) {
+        reds.push(imageData[i]);
+        greens.push(imageData[i+1]);
+        blues.push(imageData[i+1]);
+    }
+    console.log("reds: "+reds.length);
+    console.log(reds);
+    console.log("greens: "+greens.length);
+    console.log(greens);
+    console.log("blues: "+blues.length);
+    console.log(blues);
+}
