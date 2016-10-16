@@ -16,3 +16,22 @@ canvas#photo-frame {
 #info-row {
     margin-bottom: 4px;
 }
+
+#photo-info-red .bar rect {
+  fill: red;
+}
+
+#photo-info-green .bar rect {
+  fill: green;
+}
+
+#photo-info-blue .bar rect {
+  fill: blue;
+}
+
+.hist-box {
+    text-align: center;
+    border: 1px dashed grey;
+    margin-top: 5px;
+    opacity: 0;
+}
