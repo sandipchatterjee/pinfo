@@ -101,6 +101,14 @@ function makeImageHists(imageData) {
     console.log(greens);
     console.log("blues: "+blues.length);
     console.log(blues);
+
+    makeHist(reds, d3.select("#photo-info-red"), "reds");
+
+
+    makeHist(greens, d3.select("#photo-info-green"), "greens");
+
+
+    makeHist(blues, d3.select("#photo-info-blue"), "blues");
 }
 
 var pinfoBox = d3.select('#photo-info-box');
@@ -115,7 +123,8 @@ function makeHist(data, element, label="new histogram") {
         height = Math.floor(MAXPLOTWIDTH/2) - margin.top - margin.bottom;
 
     var x = d3.scaleLinear()
-        .rangeRound([0, width]);
+              .domain([1, 255])
+              .range([0, width]);
 
     var bins = d3.histogram()
         .domain(x.domain())
@@ -156,12 +165,3 @@ function makeHist(data, element, label="new histogram") {
            .style("opacity", 1);
 
 }
-
-var data_reds = d3.range(500000).map(d3.randomNormal(0.2,0.4));
-makeHist(data_reds, d3.select("#photo-info-red"), "reds");
-
-var data_greens = d3.range(500000).map(d3.randomNormal(0.6,0.1));
-makeHist(data_greens, d3.select("#photo-info-green"), "greens");
-
-var data_blues = d3.range(500000).map(d3.randomBates(10));
-makeHist(data_blues, d3.select("#photo-info-blue"), "blues");
