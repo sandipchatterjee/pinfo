@@ -116,6 +116,12 @@ var MAXPLOTWIDTH = getMaxImageViewWidth(pinfoBox)
 
 function makeHist(data, element, label="new histogram") {
 
+    element.select("svg")
+           .remove();
+
+    element.select("p")
+           .remove();
+
     var formatCount = d3.format(",.0f");
 
     var margin = {top: 10, right: 30, bottom: 30, left: 30},
