@@ -1,5 +1,4 @@
 var img = new Image();
-// img.src = 'data/race_1765_photo_35016594.jpg';
 
 var pframeBox = d3.select('#photo-frame-box');
 var dropzone = document.getElementById('dropzone');
@@ -135,8 +134,16 @@ function makeHist(data, element, label="new histogram") {
         .thresholds(x.ticks(30))
         (data);
 
+    allData = []
+    for (var i = 0; i < bins.length; i++) {
+        allData[i] = { "bins": bins[i],
+                       "yMin": d3.min(bins[i]),
+                       "yMax": d3.max(bins[i])
+                    };
+    }
+
     var y = d3.scaleLinear()
-        .domain([0, d3.max(bins, function(d) { return d.length; })])
+        .domain([0, d3.max(allData, function(d) { return d.bins.length; })])
         .range([height, 0]);
 
     element.append("p")
@@ -149,15 +156,15 @@ function makeHist(data, element, label="new histogram") {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var bar = svg.selectAll(".bar")
-        .data(bins)
+        .data(allData)
       .enter().append("g")
         .attr("class", "bar")
-        .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; });
+        .attr("transform", function(d) { return "translate(" + x(d.bins.x0) + "," + y(d.bins.length) + ")"; });
 
     bar.append("rect")
         .attr("x", 1)
-        .attr("width", x(bins[0].x1) - x(bins[0].x0) - 5)
-        .attr("height", function(d) { return height - y(d.length); });
+        .attr("width", x(allData[0].bins.x1) - x(allData[0].bins.x0) - 5)
+        .attr("height", function(d) { return height - y(d.bins.length); });
 
     svg.append("g")
         .attr("class", "axis axis--x")
@@ -168,6 +175,13 @@ function makeHist(data, element, label="new histogram") {
            .duration(1200)
            .style("opacity", 1);
 
+}
+
+function getMatchingBars(pixelValue, subplot) {
+    var allBars = d3.select("#"+subplot).selectAll(".bar");
+    var selectedBars = allBars.filter(function(d) { return (pixelValue >= d.yMin) && (pixelValue <= d.yMax); });
+
+    return selectedBars;
 }
 
 d3.select('#photo-frame').on("mousemove", function(event) {
@@ -193,11 +207,17 @@ d3.select('#photo-frame').on("mousemove", function(event) {
     infoBox.style("display", "initial");
     infoBox.text("("+adjustedX+", "+adjustedY+") " + hex);
     infoBox.style("background", hex);
-    if ((r == 255) || (g == 255) || (b == 255)) {
-        satBox.text("SATURATED");
-    }
-    else {
-        satBox.text("");
+    
+    var matchedBars = [];
+    matchedBars.push(getMatchingBars(r, "photo-info-red"));
+    matchedBars.push(getMatchingBars(r, "photo-info-green"));
+    matchedBars.push(getMatchingBars(r, "photo-info-blue"));
+
+    for (var i = 0; i < matchedBars.length; i++) {
+        matchedBars[i].style("opacity", 0.2)
+                      .transition()
+                        .duration(200)
+                        .style("opacity", 1.0);
     }
 })
 
