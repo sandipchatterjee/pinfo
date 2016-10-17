@@ -13,8 +13,7 @@ dropzone.addEventListener("dragover", function(event) {
 dropzone.addEventListener("drop", function(event) {
 
     event.preventDefault();
-    console.log(event.dataTransfer.files);
-    console.log(event.dataTransfer.files[0]);
+
     savedName = event.dataTransfer.files[0].name;
     droppedFiles = event.dataTransfer.files;
 
@@ -30,7 +29,6 @@ dropzone.addEventListener("drop", function(event) {
     
     reader.readAsDataURL(firstFile);
     
-    console.log(reader);
     reader.onload = function(e) {
         img.src = reader.result;
     }
@@ -41,6 +39,10 @@ var getMaxImageViewWidth = function(pframeBox) {
     return Math.floor(pframeBox.node().getBoundingClientRect().width*0.95);
 }
 var MAXWIDTH = getMaxImageViewWidth(pframeBox);
+
+var pinfoBox = d3.select('#photo-info-box');
+var MAXPLOTWIDTH = getMaxImageViewWidth(pinfoBox)
+
 var canvas = document.getElementById('photo-frame');
 var ctx = canvas.getContext('2d');
 
@@ -69,7 +71,7 @@ img.onload = function() {
 
         imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
                        .data;
-        console.log(imageData[5]);
+
         makeImageHists(imageData);
 
         // resize canvas and photo display if window size changes
@@ -87,20 +89,11 @@ function makeImageHists(imageData) {
     var greens = [];
     var blues = [];
 
-    console.log(imageData.length);
-    console.log(imageData[5]);
-
     for (var i=0; i < imageData.length; i+=4) {
         reds.push(imageData[i]);
         greens.push(imageData[i+1]);
         blues.push(imageData[i+1]);
     }
-    console.log("reds: "+reds.length);
-    console.log(reds);
-    console.log("greens: "+greens.length);
-    console.log(greens);
-    console.log("blues: "+blues.length);
-    console.log(blues);
 
     makeHist(reds, d3.select("#photo-info-red"), "reds");
 
@@ -110,9 +103,6 @@ function makeImageHists(imageData) {
 
     makeHist(blues, d3.select("#photo-info-blue"), "blues");
 }
-
-var pinfoBox = d3.select('#photo-info-box');
-var MAXPLOTWIDTH = getMaxImageViewWidth(pinfoBox)
 
 function makeHist(data, element, label="new histogram") {
 
