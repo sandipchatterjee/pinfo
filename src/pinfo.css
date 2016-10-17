@@ -35,3 +35,20 @@ canvas#photo-frame {
     margin-top: 5px;
     opacity: 0;
 }
+
+#mouse-position {
+    border-radius: 12px;
+    border: 2px double black;
+    padding: 12px;
+    text-align: center;
+    font-size: 18px;
+    font-family: sans-serif;
+    color: #e8e8e8;
+    display: none;
+}
+
+#sat-box {
+    text-align: left;
+    font-size: 14px;
+    font-family: sans-serif;
+}

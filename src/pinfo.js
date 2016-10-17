@@ -5,6 +5,7 @@ var pframeBox = d3.select('#photo-frame-box');
 var dropzone = document.getElementById('dropzone');
 var droppedFiles;
 var imageData;
+var SCALINGFACTOR = 1;
 
 dropzone.addEventListener("dragover", function(event) { 
     event.preventDefault();
@@ -50,14 +51,21 @@ var setCanvasDimensions = function(height, width, widthToHeightRatio) {
 
     MAXWIDTH = getMaxImageViewWidth(pframeBox);
     if (width != MAXWIDTH) {
+        oldWidth = width;
         width = MAXWIDTH;
 
         height = width/widthToHeightRatio;
+    }
+    else {
+        oldWidth = width;
     }
 
     canvas.width = width;
     canvas.height = height;
     ctx.drawImage(img, 0, 0, width, height);
+
+    return width/oldWidth;
+
 }
 
 
@@ -67,7 +75,7 @@ img.onload = function() {
         var height = img.height;
 
         widthToHeightRatio = width/height;
-        setCanvasDimensions(height, width, widthToHeightRatio);
+        SCALINGFACTOR = setCanvasDimensions(height, width, widthToHeightRatio);
 
         imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
                        .data;
@@ -76,7 +84,7 @@ img.onload = function() {
 
         // resize canvas and photo display if window size changes
         window.addEventListener("resize", function () {
-            setCanvasDimensions(height, width, widthToHeightRatio);
+            SCALINGFACTOR = setCanvasDimensions(height, width, widthToHeightRatio);
         });
 
 };
@@ -160,4 +168,39 @@ function makeHist(data, element, label="new histogram") {
            .duration(1200)
            .style("opacity", 1);
 
+}
+
+d3.select('#photo-frame').on("mousemove", function(event) {
+
+    canvasImage = d3.select(this);
+
+    var mousePos = d3.mouse(canvasImage.node());
+    var x = mousePos[0];
+    var y = mousePos[1];
+
+    var adjustedX = Math.floor(x / SCALINGFACTOR);
+    var adjustedY = Math.floor(y / SCALINGFACTOR);
+
+    var ctx = canvas.getContext('2d');
+    var rgba = ctx.getImageData(x, y, 1, 1).data;
+    var r = rgba[0];
+    var g = rgba[1];
+    var b = rgba[2];
+
+    var hex = "#" + ("000000" + convertRGBToHex(r,g,b)).slice(-6);
+    var infoBox = d3.select('#mouse-position');
+    var satBox = d3.select('#sat-box');
+    infoBox.style("display", "initial");
+    infoBox.text("("+adjustedX+", "+adjustedY+") " + hex);
+    infoBox.style("background", hex);
+    if ((r == 255) || (g == 255) || (b == 255)) {
+        satBox.text("SATURATED");
+    }
+    else {
+        satBox.text("");
+    }
+})
+
+function convertRGBToHex(red, green, blue) {
+    return ((red << 16) | (green << 8) | blue).toString(16);
 }
